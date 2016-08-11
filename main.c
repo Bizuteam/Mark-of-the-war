@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -25,7 +26,7 @@ typedef struct robot_struct
 	int x;
 	int y;
 	int direction;
-	int alive
+	int alive;
 } Robot;
 
 typedef struct game_struct
@@ -34,40 +35,63 @@ typedef struct game_struct
 	Robot robots[ROBOTS_NUMBER];
 	int map[MAP_SIZE][MAP_SIZE];
 	int quit_game;
-	
+
 }* Game;
 
-int init_game()
+Game init_game()
 {
-	int i, j, obj;
+	int i, j;
 	Game game = malloc(sizeof(struct game_struct));
 	srand(time(NULL));
 
 	// map
-	for(i=0;i<MAP_SIZE;i++)
-	{
-		for(j=0;j<MAP_SIZE;j++)
-		{
-			game->map[i][j]=1;
+	for(i=0; i<MAP_SIZE; i++) {
+		for(j=0; j<MAP_SIZE; j++) {
+			game->map[i][j] = 0;
 		}
 	}
-	
+
+	for (j=1; j<=MAP_SIZE-2; j++) {
+		game->map[j][1] = 1;
+		game->map[j][MAP_SIZE-2] = 1;
+	}
+	for (j=1; j<=MAP_SIZE-2; j++) {
+		game->map[1][j] = 1;
+		game->map[MAP_SIZE-2][j] = 1;
+	}
+	for (i=0; i<10; i++) {
+		// rand coord
+		int x_origin = (rand()%(MAP_SIZE-2)) +1;
+		int x_destination = (rand()%(MAP_SIZE-2)) +1;
+		int y_origin = (rand()%(MAP_SIZE-2)) +1;
+		int y_destination = (rand()%(MAP_SIZE-2)) +1;
+
+		for (j=x_origin; j<=x_destination; j++) {
+			game->map[j][y_origin] = 1;
+			game->map[j][y_destination] = 1;
+		}
+		for (j=y_origin; j<=y_destination; j++) {
+			game->map[x_origin][j] = 1;
+			game->map[x_destination][j] = 1;
+		}
+	}
+
 	// player
 	game->player.x = 1;
 	game->player.y = 1;
 	game->player.lifes = 10;
 	game->player.keys = 0;
 	game->player.papers = 0;
-	
+
 	// robots
 	for(i=0; i<ROBOTS_NUMBER; i++){
 		game->robots[i].x = i+2;
 		game->robots[i].y = i+2;
 	}
-	
+
 	// continue
 	game->quit_game = 0;
-	
+
 	return game;
 }
 
@@ -78,9 +102,10 @@ int display(Game game)
 	// sol
 	for(i=0; i<MAP_SIZE; i++){
 		for(j=0; j<MAP_SIZE; j++){
+			afficher_case(i, j, therbe);
 			switch(game->map[i][j]){
-			case 1:
-				afficher_case(i, j, therbe);
+			case 0:
+				afficher_case(i, j, wall);
 			break;
 			}
 		}
@@ -96,7 +121,7 @@ int display(Game game)
 	for(i=0; i<ROBOTS_NUMBER; i++) {
 		afficher_image((game->robots[i].x*LARGEUR_CASE + (64-49)/2) *zoom/256, (game->robots[i].y*HAUTEUR_CASE + (64-43)/2) *zoom/256, 49*zoom/256, 43*zoom/256, tmonstre);
 	}
-	
+
 
 	// Interface
 	char str [2];

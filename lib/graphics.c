@@ -30,6 +30,8 @@ int chargement_images()
 	//Clear screen
 	SDL_RenderClear( gRenderer );
 	SDL_Surface* stmp = NULL;
+	stmp = IMG_Load("img/Tiles/tile_342.png");
+	wall = SDL_CreateTextureFromSurface( gRenderer, stmp );
 	stmp = IMG_Load("img/Tiles/tile_11.png");
 	therbe = SDL_CreateTextureFromSurface( gRenderer, stmp );
 	stmp = IMG_Load("img/Robot 1/robot1_machine.png");

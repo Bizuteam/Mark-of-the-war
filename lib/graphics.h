@@ -23,6 +23,7 @@ SDL_Window* gWindow;
 //The surface contained by the window
 SDL_Renderer* gRenderer;
 // Les images à afficher
+SDL_Texture* wall;
 SDL_Texture* therbe;
 SDL_Texture* tmonstre;
 SDL_Texture* tperso;

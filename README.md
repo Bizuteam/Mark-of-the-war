@@ -6,7 +6,6 @@ Roguelike d'infiltration minimaliste
 TODO
 ----
 
-- [ ] génération du labirynthe
+- [x] génération du labirynthe
 - [ ] collisions
 - [ ] IA
-
