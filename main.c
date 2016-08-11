@@ -41,6 +41,7 @@ Game init_game() {
 	srand(time(NULL));
 
 	// map
+	srand(time(NULL));
 	for(i=0; i<MAP_SIZE; i++) {
 		for(j=0; j<MAP_SIZE; j++) {
 			game->map[i][j] = 0;
@@ -81,8 +82,15 @@ Game init_game() {
 
 	// robots
 	for(i=0; i<ROBOTS_NUMBER; i++) {
-		game->robots[i].x = i+2;
-		game->robots[i].y = i+2;
+		int x = 0;
+		int y = 0;
+		while (game->map[x][y] == 0) {
+			x = (rand()%(MAP_SIZE-2)) +1;
+			y = (rand()%(MAP_SIZE-2)) +1;
+		}
+		printf("Robot %i: (%i, %i)\n", i, x, y);
+		game->robots[i].x = x;
+		game->robots[i].y = y;
 	}
 
 	// continue
