@@ -11,8 +11,7 @@
 #define MAP_SIZE 20
 #define ROBOTS_NUMBER 5
 
-typedef struct player_struct
-{
+typedef struct player_struct {
 	int x;
 	int y;
 	int direction;
@@ -21,16 +20,14 @@ typedef struct player_struct
 	int keys;
 } Player;
 
-typedef struct robot_struct
-{
+typedef struct robot_struct {
 	int x;
 	int y;
 	int direction;
 	int alive;
 } Robot;
 
-typedef struct game_struct
-{
+typedef struct game_struct {
 	Player player;
 	Robot robots[ROBOTS_NUMBER];
 	int map[MAP_SIZE][MAP_SIZE];
@@ -83,7 +80,7 @@ Game init_game() {
 	game->player.papers = 0;
 
 	// robots
-	for(i=0; i<ROBOTS_NUMBER; i++){
+	for(i=0; i<ROBOTS_NUMBER; i++) {
 		game->robots[i].x = i+2;
 		game->robots[i].y = i+2;
 	}
@@ -98,10 +95,10 @@ int display(Game game) {
 	int i, j;
 
 	// sol
-	for(i=0; i<MAP_SIZE; i++){
-		for(j=0; j<MAP_SIZE; j++){
+	for(i=0; i<MAP_SIZE; i++) {
+		for(j=0; j<MAP_SIZE; j++) {
 			afficher_case(i, j, therbe);
-			switch(game->map[i][j]){
+			switch(game->map[i][j]) {
 			case 0:
 				afficher_case(i, j, wall);
 			break;
@@ -159,8 +156,7 @@ int game_state(Game game) {
 			}
 		}
 
-		if(event.wheel.type == SDL_MOUSEWHEEL)
-		{
+		if(event.wheel.type == SDL_MOUSEWHEEL) {
 			zoom += event.wheel.y;
 			if(zoom > 256)
 				zoom = 256;
@@ -168,9 +164,7 @@ int game_state(Game game) {
 				zoom = 128;
 		}
 
-		if(event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-		{
-			puts("Resize");
+		if(event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 			winx = event.window.data1;
 			winy = event.window.data2;
 		}
@@ -188,7 +182,6 @@ int game_state(Game game) {
 /* Main */
 int main() {
 	Game game;
-	SDL_Event event;
 
 	//Init SDL2
 	Init_Graphics();
