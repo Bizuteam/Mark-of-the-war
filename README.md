@@ -7,5 +7,5 @@ TODO
 ----
 
 - [x] génération du labirynthe
-- [ ] collisions
+- [x] collisions
 - [ ] IA

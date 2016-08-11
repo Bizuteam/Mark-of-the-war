@@ -38,8 +38,7 @@ typedef struct game_struct
 
 }* Game;
 
-Game init_game()
-{
+Game init_game() {
 	int i, j;
 	Game game = malloc(sizeof(struct game_struct));
 	srand(time(NULL));
@@ -95,8 +94,7 @@ Game init_game()
 	return game;
 }
 
-int display(Game game)
-{
+int display(Game game) {
 	int i, j;
 
 	// sol
@@ -143,17 +141,19 @@ int display(Game game)
 int game_state(Game game) {
 	SDL_Event event;
 
+	Player next_player = game->player;
+
 	while(SDL_PollEvent(&event)) {
 		if(event.key.type == SDL_KEYDOWN) {
 			// Gestion des évènements
 			if (event.key.keysym.sym == SDLK_UP) {
-					game->player.y--;
+					next_player.y--;
 			} else if (event.key.keysym.sym == SDLK_RIGHT) {
-					game->player.x++;
+					next_player.x++;
 			} else if (event.key.keysym.sym == SDLK_DOWN) {
-					game->player.y++;
+					next_player.y++;
 			} else if (event.key.keysym.sym == SDLK_LEFT) {
-					game->player.x--;
+					next_player.x--;
 			} else if (event.key.keysym.sym == SDLK_ESCAPE) {
 				game->quit_game = 1;
 			}
@@ -175,6 +175,13 @@ int game_state(Game game) {
 			winy = event.window.data2;
 		}
 	}
+
+	// collisions
+	if (game->map[next_player.x][next_player.y] != 0) {
+		game->player.x = next_player.x;
+		game->player.y = next_player.y;
+	}
+
 	return 0;
 }
 
