@@ -88,7 +88,6 @@ Game init_game() {
 			x = (rand()%(MAP_SIZE-2)) +1;
 			y = (rand()%(MAP_SIZE-2)) +1;
 		}
-		printf("Robot %i: (%i, %i)\n", i, x, y);
 		game->robots[i].x = x;
 		game->robots[i].y = y;
 	}
@@ -99,6 +98,40 @@ Game init_game() {
 	return game;
 }
 
+int wall_uid(Game game, int x, int y) {
+	int uid = 0;
+
+	if (game->map[x][y] == 1) {
+		return -1;
+	}
+
+	uid += game->map[x-1][y-1] * 1;
+	uid += game->map[x][y-1] * 2;
+	uid += game->map[x+1][y-1] * 4;
+	uid += game->map[x+1][y] * 8;
+	uid += game->map[x+1][y+1] * 16;
+	uid += game->map[x][y+1] * 32;
+	uid += game->map[x-1][y+1] * 64;
+	uid += game->map[x-1][y] * 128;
+
+	return uid;
+}
+
+//TODO: better method
+void display_wall(Game game, int x, int y) {
+	if (game->map[x][y-1] == 1) {
+		afficher_case(x, y, wall_up);
+	} else if (game->map[x+1][y] == 1) {
+		afficher_case(x, y, wall_right);
+	} else if (game->map[x][y+1] == 1) {
+		afficher_case(x, y, wall_down);
+	} else if (game->map[x-1][y] == 1) {
+		afficher_case(x, y, wall_left);
+	} else {
+		afficher_case(x, y, wall);
+	}
+}
+
 int display(Game game) {
 	int i, j;
 
@@ -106,10 +139,8 @@ int display(Game game) {
 	for(i=0; i<MAP_SIZE; i++) {
 		for(j=0; j<MAP_SIZE; j++) {
 			afficher_case(i, j, therbe);
-			switch(game->map[i][j]) {
-			case 0:
-				afficher_case(i, j, wall);
-			break;
+			if (game->map[i][j] == 0) {
+				display_wall(game, i, j);
 			}
 		}
 	}

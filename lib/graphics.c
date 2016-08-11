@@ -16,6 +16,8 @@ int Init_Graphics()
 	zoom = 256;
 	winx = SCREEN_WIDTH;
 	winy = SCREEN_HEIGHT;
+
+	return 0;
 }
 
 int Quit_Graphics()
@@ -23,6 +25,8 @@ int Quit_Graphics()
 	//Quit SDL
 	SDL_DestroyWindow( gWindow );
 	SDL_Quit();
+
+	return 0;
 }
 
 int chargement_images()
@@ -30,8 +34,18 @@ int chargement_images()
 	//Clear screen
 	SDL_RenderClear( gRenderer );
 	SDL_Surface* stmp = NULL;
-	stmp = IMG_Load("img/Tiles/tile_342.png");
+	stmp = IMG_Load("img/Tiles/tile_340.png");
 	wall = SDL_CreateTextureFromSurface( gRenderer, stmp );
+	stmp = IMG_Load("img/Tiles/tile_367.png");
+	wall_pillar = SDL_CreateTextureFromSurface( gRenderer, stmp );
+	stmp = IMG_Load("img/Tiles/tile_365.png");
+	wall_up = SDL_CreateTextureFromSurface( gRenderer, stmp );
+	stmp = IMG_Load("img/Tiles/tile_339.png");
+	wall_right = SDL_CreateTextureFromSurface( gRenderer, stmp );
+	stmp = IMG_Load("img/Tiles/tile_366.png");
+	wall_down = SDL_CreateTextureFromSurface( gRenderer, stmp );
+	stmp = IMG_Load("img/Tiles/tile_338.png");
+	wall_left = SDL_CreateTextureFromSurface( gRenderer, stmp );
 	stmp = IMG_Load("img/Tiles/tile_11.png");
 	therbe = SDL_CreateTextureFromSurface( gRenderer, stmp );
 	stmp = IMG_Load("img/Robot 1/robot1_machine.png");
