@@ -109,6 +109,21 @@ int afficher_image(int x, int y, int w, int h, SDL_Texture* img)
 	return 0;
 }
 
+int display_image_with_rotation(int x, int y, int w, int h, int cx, int cy, double angle, SDL_Texture* img) {
+	SDL_Rect pos;
+	pos.x = x;
+	pos.y = y;
+	pos.w = w;
+	pos.h = h;
+	SDL_Point point;
+	point.x = cx;
+	point.y = cy;
+	return SDL_RenderCopyEx(gRenderer, img,
+					 NULL, &pos,
+                     angle, &point,
+                     SDL_FLIP_NONE);
+}
+
 int maj_ecran()
 {
 	//Update screen
