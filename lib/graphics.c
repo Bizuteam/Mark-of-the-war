@@ -29,45 +29,41 @@ int Quit_Graphics()
 	return 0;
 }
 
+Sprite spriteFromURI(char* URI, int x, int y, int width, int height,
+	                 int center_x, int center_y){
+	Sprite sprite = malloc(sizeof(struct sprite_struct));
+	SDL_Surface* stmp = IMG_Load(URI);
+	sprite->img = SDL_CreateTextureFromSurface(gRenderer, stmp);
+	sprite->location.x = x;
+	sprite->location.y = y;
+	sprite->location.w = width;
+	sprite->location.h = height;
+	sprite->center.x = center_x;
+	sprite->center.y = center_y;
+	return sprite;
+}
+
 int chargement_images()
 {
 	//Clear screen
 	SDL_RenderClear( gRenderer );
-	SDL_Surface* stmp = NULL;
-	stmp = IMG_Load("img/New Tiles/wall_full.png");
-	wall = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_up.png");
-	wall_up = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_right.png");
-	wall_right = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_down.png");
-	wall_down = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_left.png");
-	wall_left = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_NW_angle.png");
-	wall_NW_angle = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_NW_corner.png");
-	wall_NW_corner = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_NE_angle.png");
-	wall_NE_angle = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_NE_corner.png");
-	wall_NE_corner = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_SE_angle.png");
-	wall_SE_angle = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_SE_corner.png");
-	wall_SE_corner = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_SW_angle.png");
-	wall_SW_angle = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/New Tiles/wall_SW_corner.png");
-	wall_SW_corner = SDL_CreateTextureFromSurface(gRenderer, stmp);
-	stmp = IMG_Load("img/Tiles/tile_11.png");
-	therbe = SDL_CreateTextureFromSurface( gRenderer, stmp );
-	stmp = IMG_Load("img/Robot 1/robot1_machine.png");
-	tmonstre = SDL_CreateTextureFromSurface( gRenderer, stmp );
-	stmp = IMG_Load("img/Survivor 1/survivor1_stand.png");
-	tperso = SDL_CreateTextureFromSurface( gRenderer, stmp );
-	stmp = IMG_Load("img/Interface.png");
-	tinterface = SDL_CreateTextureFromSurface( gRenderer, stmp );
+	wall = spriteFromURI("img/New Tiles/wall_full.png", 0, 0, 32, 32, 16, 16);
+	wall_up = spriteFromURI("img/New Tiles/wall_up.png", 0, 0, 32, 32, 16, 16);
+	wall_right = spriteFromURI("img/New Tiles/wall_right.png", 0, 0, 32, 32, 16, 16);
+	wall_down = spriteFromURI("img/New Tiles/wall_down.png", 0, 0, 32, 32, 16, 16);
+	wall_left = spriteFromURI("img/New Tiles/wall_left.png", 0, 0, 32, 32, 16, 16);
+	wall_NW_angle = spriteFromURI("img/New Tiles/wall_NW_angle.png", 0, 0, 32, 32, 16, 16);
+	wall_NW_corner = spriteFromURI("img/New Tiles/wall_NW_corner.png", 0, 0, 32, 32, 16, 16);
+	wall_NE_angle = spriteFromURI("img/New Tiles/wall_NE_angle.png", 0, 0, 32, 32, 16, 16);
+	wall_NE_corner = spriteFromURI("img/New Tiles/wall_NE_corner.png", 0, 0, 32, 32, 16, 16);
+	wall_SE_angle = spriteFromURI("img/New Tiles/wall_SE_angle.png", 0, 0, 32, 32, 16, 16);
+	wall_SE_corner = spriteFromURI("img/New Tiles/wall_SE_corner.png", 0, 0, 32, 32, 16, 16);
+	wall_SW_angle = spriteFromURI("img/New Tiles/wall_SW_angle.png", 0, 0, 32, 32, 16, 16);
+	wall_SW_corner = spriteFromURI("img/New Tiles/wall_SW_corner.png", 0, 0, 32, 32, 16, 16);
+	therbe = spriteFromURI("img/Tiles/tile_11.png", 0, 0, 64, 64, 32, 32);
+	tmonstre = spriteFromURI("img/Robot 1/robot1_machine.png", 0, 0, 49, 43, 25, 22);
+	tperso = spriteFromURI("img/Survivor 1/survivor1_stand.png", 0, 0, 35, 43, 18, 22);
+	tinterface = spriteFromURI("img/Interface.png", 0, 0, 200, 100, 100, 50);
 
 	// Font
 	police = TTF_OpenFont("Gabriela.ttf", 25);
@@ -91,22 +87,51 @@ int afficher_texte(int x, int y, const char* text)
 	return 0;
 }
 
-int afficher_case(int x, int y, SDL_Texture* img)
-{
-	afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256, LARGEUR_CASE*zoom/256, HAUTEUR_CASE*zoom/256, img);
-	return 0;
-}
-
-int afficher_image(int x, int y, int w, int h, SDL_Texture* img)
-{
-	SDL_Rect pos;
+int displaySprite(Sprite sprite, int x, int y) {
+	SDL_Rect pos = sprite->location;
 	pos.x = x;
 	pos.y = y;
-	pos.w = w;
-	pos.h = h;
-	//Render texture to screen
-	SDL_RenderCopy( gRenderer, img, NULL, &pos );
-	return 0;
+	return SDL_RenderCopy(gRenderer, sprite->img, &sprite->location, &pos );
+}
+
+int displaySpriteOnGrid(Sprite sprite, int x, int y) {
+	SDL_Rect pos = sprite->location;
+	pos.x = x*LARGEUR_CASE * zoom/256;
+	pos.y = y*HAUTEUR_CASE * zoom/256;
+	pos.w = pos.w * zoom/256;
+	pos.h = pos.h * zoom/256;
+	return SDL_RenderCopy(gRenderer, sprite->img, &sprite->location, &pos );
+}
+
+int displaySpriteOnGridWithOffset(Sprite sprite, int x, int y, int offx, int offy) {
+	SDL_Rect pos = sprite->location;
+	pos.x = (x*LARGEUR_CASE+offx) * zoom/256;
+	pos.y = (y*HAUTEUR_CASE+offy) * zoom/256;
+	pos.w = pos.w * zoom/256;
+	pos.h = pos.h * zoom/256;
+	return SDL_RenderCopy(gRenderer, sprite->img, &sprite->location, &pos );
+}
+
+int displayObjectSpriteOnGrid(Sprite sprite, int x, int y) {
+	SDL_Rect pos = sprite->location;
+	pos.x = (x*LARGEUR_CASE+LARGEUR_CASE/2-sprite->center.x) * zoom/256;
+	pos.y = (y*HAUTEUR_CASE+HAUTEUR_CASE/2-sprite->center.y) * zoom/256;
+	pos.w = pos.w * zoom/256;
+	pos.h = pos.h * zoom/256;
+	return SDL_RenderCopy(gRenderer, sprite->img, &sprite->location, &pos );
+}
+
+int displayObjectSpriteOnGridWithRotation(Sprite sprite, int x, int y, double angle) {
+	SDL_Rect pos = sprite->location;
+	SDL_Point center = sprite->center;
+	pos.x = (x*LARGEUR_CASE+LARGEUR_CASE/2-sprite->center.x) * zoom/256;
+	pos.y = (y*HAUTEUR_CASE+HAUTEUR_CASE/2-sprite->center.y) * zoom/256;
+	pos.w = pos.w * zoom/256;
+	pos.h = pos.h * zoom/256;
+	center.x = center.x * zoom/256;
+	center.y = center.y * zoom/256;
+	return SDL_RenderCopyEx(gRenderer, sprite->img, &sprite->location, &pos,
+	                        angle, &sprite->center, SDL_FLIP_NONE);
 }
 
 int display_image_with_rotation(int x, int y, int w, int h, int cx, int cy, double angle, SDL_Texture* img) {

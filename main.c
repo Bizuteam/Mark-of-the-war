@@ -77,6 +77,7 @@ Game init_game() {
 	// player
 	game->player.x = 1;
 	game->player.y = 1;
+	game->player.direction = 2;
 	game->player.lifes = 10;
 	game->player.keys = 0;
 	game->player.papers = 0;
@@ -105,75 +106,63 @@ Game init_game() {
 
 void display_wall(Game game, int x, int y) {
 	// North-West
-	if (game->map[x][y-1] == 1 && game->map[x-1][y] == 1) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_NW_corner);
+	if (x == 0 || y == 0) {
+		displaySpriteOnGridWithOffset(wall, x, y, 0, 0);
+	} else if (game->map[x][y-1] == 1 && game->map[x-1][y] == 1) {
+		displaySpriteOnGridWithOffset(wall_NW_corner, x, y, 0, 0);
 	} else if (game->map[x][y-1] == 0 && game->map[x-1][y] == 1) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_left);
+		displaySpriteOnGridWithOffset(wall_left, x, y, 0, 0);
 	} else if (game->map[x][y-1] == 1 && game->map[x-1][y] == 0) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_up);
+		displaySpriteOnGridWithOffset(wall_up, x, y, 0, 0);
 	} else if (game->map[x][y-1] == 0 && game->map[x-1][y] == 0 && game->map[x-1][y-1] == 1) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_NW_angle);
+		displaySpriteOnGridWithOffset(wall_NW_angle, x, y, 0, 0);
 	} else {
-		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall);
+		displaySpriteOnGridWithOffset(wall, x, y, 0, 0);
 	}
 
 	// North-East
-	if (game->map[x][y-1] == 1 && game->map[x+1][y] == 1) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_NE_corner);
+	if (x == MAP_SIZE-1 || y == 0) {
+		displaySpriteOnGridWithOffset(wall, x, y, 32, 0);
+	} else if (game->map[x][y-1] == 1 && game->map[x+1][y] == 1) {
+		displaySpriteOnGridWithOffset(wall_NE_corner, x, y, 32, 0);
 	} else if (game->map[x][y-1] == 0 && game->map[x+1][y] == 1) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_right);
+		displaySpriteOnGridWithOffset(wall_right, x, y, 32, 0);
 	} else if (game->map[x][y-1] == 1 && game->map[x+1][y] == 0) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_up);
+		displaySpriteOnGridWithOffset(wall_up, x, y, 32, 0);
 	} else if (game->map[x][y-1] == 0 && game->map[x+1][y] == 0 && game->map[x+1][y-1] == 1) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_NE_angle);
+		displaySpriteOnGridWithOffset(wall_NE_angle, x, y, 32, 0);
 	} else {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
-			32*zoom/256, 32*zoom/256, wall);
+		displaySpriteOnGridWithOffset(wall, x, y, 32, 0);
 	}
 
 	// South_East
-	if (game->map[x][y+1] == 1 && game->map[x+1][y] == 1) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_SE_corner);
+	if (x == MAP_SIZE-1 || y == MAP_SIZE-1) {
+		displaySpriteOnGridWithOffset(wall, x, y, 32, 32);
+	} else if (game->map[x][y+1] == 1 && game->map[x+1][y] == 1) {
+		displaySpriteOnGridWithOffset(wall_SE_corner, x, y, 32, 32);
 	} else if (game->map[x][y+1] == 0 && game->map[x+1][y] == 1) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_right);
+		displaySpriteOnGridWithOffset(wall_right, x, y, 32, 32);
 	} else if (game->map[x][y+1] == 1 && game->map[x+1][y] == 0) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_down);
+		displaySpriteOnGridWithOffset(wall_down, x, y, 32, 32);
 	} else if (game->map[x][y+1] == 0 && game->map[x+1][y] == 0 && game->map[x+1][y+1] == 1) {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_SE_angle);
+		displaySpriteOnGridWithOffset(wall_SE_angle, x, y, 32, 32);
 	} else {
-		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall);
+		displaySpriteOnGridWithOffset(wall, x, y, 32, 32);
 	}
 
 	// South_West
-	if (game->map[x][y+1] == 1 && game->map[x-1][y] == 1) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_SW_corner);
+	if (x == 0 || y == MAP_SIZE-1) {
+		displaySpriteOnGridWithOffset(wall, x, y, 0, 32);
+	} else if (game->map[x][y+1] == 1 && game->map[x-1][y] == 1) {
+		displaySpriteOnGridWithOffset(wall_SW_corner, x, y, 0, 32);
 	} else if (game->map[x][y+1] == 0 && game->map[x-1][y] == 1) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_left);
+		displaySpriteOnGridWithOffset(wall_left, x, y, 0, 32);
 	} else if (game->map[x][y+1] == 1 && game->map[x-1][y] == 0) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_down);
+		displaySpriteOnGridWithOffset(wall_down, x, y, 0, 32);
 	} else if (game->map[x][y+1] == 0 && game->map[x-1][y] == 0 && game->map[x-1][y+1] == 1) {
-		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall_SW_angle);
+		displaySpriteOnGridWithOffset(wall_SW_angle, x, y, 0, 32);
 	} else {
-		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
-			32*zoom/256, 32*zoom/256, wall);
+		displaySpriteOnGridWithOffset(wall, x, y, 0, 32);
 	}
 }
 
@@ -183,7 +172,7 @@ int display(Game game) {
 	// sol
 	for(i=0; i<MAP_SIZE; i++) {
 		for(j=0; j<MAP_SIZE; j++) {
-			afficher_case(i, j, therbe);
+			displaySpriteOnGrid(therbe, i, j);
 			if (game->map[i][j] == 0) {
 				display_wall(game, i, j);
 			}
@@ -192,19 +181,21 @@ int display(Game game) {
 
 	// élements & objets
 	// display player
-	afficher_image((game->player.x*LARGEUR_CASE + (64-35)/2) *zoom/256,
-	              (game->player.y*HAUTEUR_CASE + (64-45)/2) *zoom/256,
-	              35*zoom/256, 45*zoom/256, tperso);
+	displayObjectSpriteOnGridWithRotation(tperso,
+		game->player.x, game->player.y,
+		90*((game->player.direction+3)%4));
 
 	//display robots
 	for(i=0; i<ROBOTS_NUMBER; i++) {
-		afficher_image((game->robots[i].x*LARGEUR_CASE + (64-49)/2) *zoom/256, (game->robots[i].y*HAUTEUR_CASE + (64-43)/2) *zoom/256, 49*zoom/256, 43*zoom/256, tmonstre);
+		displayObjectSpriteOnGridWithRotation(tmonstre,
+			game->robots[i].x, game->robots[i].y,
+			90*((game->robots[i].direction+3)%4));
 	}
 
 
 	// Interface
 	char str [2];
-	afficher_image(10, 10, 200, 100, tinterface);
+	displaySprite(tinterface, 10, 10);
 	afficher_texte(25, 15, "Vie:");
 	sprintf(str, "%d", game->player.lifes);
 	afficher_texte(125, 15, str);
@@ -230,15 +221,19 @@ int game_state(Game game) {
 			// Gestion des évènements
 			if (event.key.keysym.sym == SDLK_UP) {
 					next_player.y--;
+					next_player.direction = 0;
 					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_RIGHT) {
 					next_player.x++;
+					next_player.direction = 1;
 					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_DOWN) {
 					next_player.y++;
+					next_player.direction = 2;
 					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_LEFT) {
 					next_player.x--;
+					next_player.direction = 3;
 					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_ESCAPE) {
 				game->quit_game = 1;
@@ -266,8 +261,7 @@ int game_state(Game game) {
 
 	// collisions
 	if (game->map[next_player.x][next_player.y] != 0) {
-		game->player.x = next_player.x;
-		game->player.y = next_player.y;
+		game->player = next_player;
 	}
 
 	// robots mouvement
