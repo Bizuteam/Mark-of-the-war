@@ -24,6 +24,7 @@ typedef struct robot_struct {
 	int x;
 	int y;
 	int direction;
+	int rotation_direction;
 	int alive;
 } Robot;
 
@@ -90,6 +91,10 @@ Game init_game() {
 		}
 		game->robots[i].x = x;
 		game->robots[i].y = y;
+
+		game->robots[i].direction = rand()%4;
+		game->robots[i].rotation_direction = -1 + (2*(rand()%2));
+		game->robots[i].alive = 1;
 	}
 
 	// continue
@@ -98,29 +103,7 @@ Game init_game() {
 	return game;
 }
 
-int wall_uid(Game game, int x, int y) {
-	int uid = 0;
-
-	if (game->map[x][y] == 1) {
-		return -1;
-	}
-
-	uid += game->map[x-1][y-1] * 1;
-	uid += game->map[x][y-1] * 2;
-	uid += game->map[x+1][y-1] * 4;
-	uid += game->map[x+1][y] * 8;
-	uid += game->map[x+1][y+1] * 16;
-	uid += game->map[x][y+1] * 32;
-	uid += game->map[x-1][y+1] * 64;
-	uid += game->map[x-1][y] * 128;
-
-	return uid;
-}
-
-//TODO: better method
 void display_wall(Game game, int x, int y) {
-	afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
-		64*zoom/256, 64*zoom/256, tmonstre);
 	// North-West
 	if (game->map[x][y-1] == 1 && game->map[x-1][y] == 1) {
 		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
@@ -238,6 +221,7 @@ int display(Game game) {
 
 int game_state(Game game) {
 	SDL_Event event;
+	int player_moved = 0;
 
 	Player next_player = game->player;
 
@@ -246,14 +230,19 @@ int game_state(Game game) {
 			// Gestion des évènements
 			if (event.key.keysym.sym == SDLK_UP) {
 					next_player.y--;
+					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_RIGHT) {
 					next_player.x++;
+					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_DOWN) {
 					next_player.y++;
+					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_LEFT) {
 					next_player.x--;
+					player_moved = 1;
 			} else if (event.key.keysym.sym == SDLK_ESCAPE) {
 				game->quit_game = 1;
+				player_moved = 1;
 			}
 		}
 
@@ -271,10 +260,45 @@ int game_state(Game game) {
 		}
 	}
 
+	if (player_moved == 0) {
+		return 0;
+	}
+
 	// collisions
 	if (game->map[next_player.x][next_player.y] != 0) {
 		game->player.x = next_player.x;
 		game->player.y = next_player.y;
+	}
+
+	// robots mouvement
+	for (size_t i = 0; i < ROBOTS_NUMBER; i++) {
+		Robot robot = game->robots[i];
+		if (robot.direction == 0) {
+			if (game->map[robot.x][robot.y-1] != 0) {
+				robot.y--;
+			} else {
+				robot.direction = (robot.direction + robot.rotation_direction)%4;
+			}
+		} else if (robot.direction == 1) {
+			if (game->map[robot.x+1][robot.y] != 0) {
+				robot.x++;
+			} else {
+				robot.direction = (robot.direction + robot.rotation_direction)%4;
+			}
+		} else if (robot.direction == 2) {
+			if (game->map[robot.x][robot.y+1] != 0) {
+				robot.y++;
+			} else {
+				robot.direction = (robot.direction + robot.rotation_direction)%4;
+			}
+		} else {
+			if (game->map[robot.x-1][robot.y] != 0) {
+				robot.x--;
+			} else {
+				robot.direction = (robot.direction + robot.rotation_direction)%4;
+			}
+		}
+		game->robots[i] = robot;
 	}
 
 	return 0;
