@@ -131,7 +131,7 @@ int displayObjectSpriteOnGridWithRotation(Sprite sprite, int x, int y, double an
 	center.x = center.x * zoom/256;
 	center.y = center.y * zoom/256;
 	return SDL_RenderCopyEx(gRenderer, sprite->img, &sprite->location, &pos,
-	                        angle, &sprite->center, SDL_FLIP_NONE);
+	                        angle, &center, SDL_FLIP_NONE);
 }
 
 int display_image_with_rotation(int x, int y, int w, int h, int cx, int cy, double angle, SDL_Texture* img) {
