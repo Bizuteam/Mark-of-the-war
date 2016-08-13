@@ -275,25 +275,25 @@ int game_state(Game game) {
 			if (!is_wall(game, robot.x, robot.y-1)) {
 				robot.y--;
 			} else {
-				robot.direction = (robot.direction + robot.rotation_direction)%4;
+				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
 			}
 		} else if (robot.direction == 1) {
 			if (!is_wall(game, robot.x+1, robot.y)) {
 				robot.x++;
 			} else {
-				robot.direction = (robot.direction + robot.rotation_direction)%4;
+				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
 			}
 		} else if (robot.direction == 2) {
 			if (!is_wall(game, robot.x, robot.y+1)) {
 				robot.y++;
 			} else {
-				robot.direction = (robot.direction + robot.rotation_direction)%4;
+				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
 			}
 		} else {
 			if (!is_wall(game, robot.x-1, robot.y)) {
 				robot.x--;
 			} else {
-				robot.direction = (robot.direction + robot.rotation_direction)%4;
+				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
 			}
 		}
 		game->robots[i] = robot;
