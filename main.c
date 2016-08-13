@@ -119,16 +119,78 @@ int wall_uid(Game game, int x, int y) {
 
 //TODO: better method
 void display_wall(Game game, int x, int y) {
-	if (game->map[x][y-1] == 1) {
-		afficher_case(x, y, wall_up);
-	} else if (game->map[x+1][y] == 1) {
-		afficher_case(x, y, wall_right);
-	} else if (game->map[x][y+1] == 1) {
-		afficher_case(x, y, wall_down);
-	} else if (game->map[x-1][y] == 1) {
-		afficher_case(x, y, wall_left);
+	afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
+		64*zoom/256, 64*zoom/256, tmonstre);
+	// North-West
+	if (game->map[x][y-1] == 1 && game->map[x-1][y] == 1) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_NW_corner);
+	} else if (game->map[x][y-1] == 0 && game->map[x-1][y] == 1) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_left);
+	} else if (game->map[x][y-1] == 1 && game->map[x-1][y] == 0) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_up);
+	} else if (game->map[x][y-1] == 0 && game->map[x-1][y] == 0 && game->map[x-1][y-1] == 1) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_NW_angle);
 	} else {
-		afficher_case(x, y, wall);
+		afficher_image(x*LARGEUR_CASE * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall);
+	}
+
+	// North-East
+	if (game->map[x][y-1] == 1 && game->map[x+1][y] == 1) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_NE_corner);
+	} else if (game->map[x][y-1] == 0 && game->map[x+1][y] == 1) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_right);
+	} else if (game->map[x][y-1] == 1 && game->map[x+1][y] == 0) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_up);
+	} else if (game->map[x][y-1] == 0 && game->map[x+1][y] == 0 && game->map[x+1][y-1] == 1) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_NE_angle);
+	} else {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, y*HAUTEUR_CASE * zoom/256,
+			32*zoom/256, 32*zoom/256, wall);
+	}
+
+	// South_East
+	if (game->map[x][y+1] == 1 && game->map[x+1][y] == 1) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_SE_corner);
+	} else if (game->map[x][y+1] == 0 && game->map[x+1][y] == 1) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_right);
+	} else if (game->map[x][y+1] == 1 && game->map[x+1][y] == 0) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_down);
+	} else if (game->map[x][y+1] == 0 && game->map[x+1][y] == 0 && game->map[x+1][y+1] == 1) {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_SE_angle);
+	} else {
+		afficher_image((x*LARGEUR_CASE+32) * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall);
+	}
+
+	// South_West
+	if (game->map[x][y+1] == 1 && game->map[x-1][y] == 1) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_SW_corner);
+	} else if (game->map[x][y+1] == 0 && game->map[x-1][y] == 1) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_left);
+	} else if (game->map[x][y+1] == 1 && game->map[x-1][y] == 0) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_down);
+	} else if (game->map[x][y+1] == 0 && game->map[x-1][y] == 0 && game->map[x-1][y+1] == 1) {
+		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall_SW_angle);
+	} else {
+		afficher_image(x*LARGEUR_CASE * zoom/256, (y*HAUTEUR_CASE+32) * zoom/256,
+			32*zoom/256, 32*zoom/256, wall);
 	}
 }
 
@@ -196,7 +258,7 @@ int game_state(Game game) {
 		}
 
 		if(event.wheel.type == SDL_MOUSEWHEEL) {
-			zoom += event.wheel.y;
+			zoom += event.wheel.y*8;
 			if(zoom > 256)
 				zoom = 256;
 			if(zoom < 128)
