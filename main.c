@@ -36,6 +36,10 @@ typedef struct game_struct {
 
 }* Game;
 
+int is_wall(Game game, int x, int y) {
+	return game->map[x][y] == 0;
+}
+
 Game init_game() {
 	int i, j;
 	Game game = malloc(sizeof(struct game_struct));
@@ -86,7 +90,7 @@ Game init_game() {
 	for(i=0; i<ROBOTS_NUMBER; i++) {
 		int x = 0;
 		int y = 0;
-		while (game->map[x][y] == 0) {
+		while (is_wall(game, x, y)) {
 			x = (rand()%(MAP_SIZE-2)) +1;
 			y = (rand()%(MAP_SIZE-2)) +1;
 		}
@@ -260,7 +264,7 @@ int game_state(Game game) {
 	}
 
 	// collisions
-	if (game->map[next_player.x][next_player.y] != 0) {
+	if (!is_wall(game, next_player.x, next_player.y)) {
 		game->player = next_player;
 	}
 
@@ -268,25 +272,25 @@ int game_state(Game game) {
 	for (size_t i = 0; i < ROBOTS_NUMBER; i++) {
 		Robot robot = game->robots[i];
 		if (robot.direction == 0) {
-			if (game->map[robot.x][robot.y-1] != 0) {
+			if (!is_wall(game, robot.x, robot.y-1)) {
 				robot.y--;
 			} else {
 				robot.direction = (robot.direction + robot.rotation_direction)%4;
 			}
 		} else if (robot.direction == 1) {
-			if (game->map[robot.x+1][robot.y] != 0) {
+			if (!is_wall(game, robot.x+1, robot.y)) {
 				robot.x++;
 			} else {
 				robot.direction = (robot.direction + robot.rotation_direction)%4;
 			}
 		} else if (robot.direction == 2) {
-			if (game->map[robot.x][robot.y+1] != 0) {
+			if (!is_wall(game, robot.x, robot.y+1)) {
 				robot.y++;
 			} else {
 				robot.direction = (robot.direction + robot.rotation_direction)%4;
 			}
 		} else {
-			if (game->map[robot.x-1][robot.y] != 0) {
+			if (!is_wall(game, robot.x-1, robot.y)) {
 				robot.x--;
 			} else {
 				robot.direction = (robot.direction + robot.rotation_direction)%4;
