@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <math.h>
 #include "lib/graphics.h"
 #include "header.h"
 #include "maze.h"
@@ -261,7 +262,8 @@ int game_state(Game game) {
 			}
 
 			if (game->exit.x == game->player.x &&
-				game->exit.y == game->player.y) {
+				game->exit.y == game->player.y &&
+				game->player.keys == CARDS_NUMBER) {
 				game->quit_game = 1;
 			}
 
@@ -315,6 +317,31 @@ int game_state(Game game) {
 					}
 				}
 				game->robots[i] = robot;
+
+				// hitting
+				Player player = game->player;
+				int x = player.x - robot.x;
+				int y = player.y - robot.y;
+				if (sqrt(x*x + y*y)<2) {
+					printf("distance: %f\n", sqrt(x*x + y*y));
+					if (robot.direction == 0 && player.y <= robot.y) {
+						player.lifes--;
+						puts("hit");
+					} else if (robot.direction == 1 &&
+						player.x >= robot.x) {
+						player.lifes--;
+						puts("hit");
+					} else if (robot.direction == 2 &&
+						player.y >= robot.y) {
+						player.lifes--;
+						puts("hit");
+					} else if (robot.direction == 3 &&
+						player.x <= robot.x) {
+						player.lifes--;
+						puts("hit");
+					}
+				}
+				game->player = player;
 			}
 		}
 	}

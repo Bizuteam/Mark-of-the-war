@@ -1,7 +1,7 @@
 all: link
 
 link: main.o graphics.o maze.o
-	gcc -o markOfTheWar main.o graphics.o maze.o -lSDL2 -lSDL2_image -lSDL2_ttf -lfreetype
+	gcc -o markOfTheWar main.o graphics.o maze.o -lm -lSDL2 -lSDL2_image -lSDL2_ttf -lfreetype
 
 graphics.o: lib/graphics.c
 	gcc -c lib/graphics.c
