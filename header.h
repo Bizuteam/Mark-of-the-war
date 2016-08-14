@@ -1,8 +1,8 @@
 #ifndef HEADER_H
 #define HEADER_H
 #define VITESSE 4
-//Must be odd
-#define MAP_SIZE ((2*10)+1)
+//Must be odd: 2k+1
+#define MAP_SIZE (2*10+1)
 #define SETS_ROW ((MAP_SIZE-1)/2)
 #define SETS_NUMBER (SETS_ROW*SETS_ROW)
 #define EDGES_DOUBLE_ROW (MAP_SIZE-2)
