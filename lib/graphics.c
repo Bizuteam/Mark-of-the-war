@@ -14,10 +14,13 @@ int Init_Graphics()
 	TTF_Init();
 	chargement_images();
 	zoom = 256;
-	winx = SCREEN_WIDTH;
-	winy = SCREEN_HEIGHT;
-	scrollx = 64*6;
-	scrolly = 64*6;
+	SDL_SetRenderDrawColor(gRenderer, 0x4a, 0x4a, 0x4a, 255);
+	windows.x = 0;
+	windows.y = 0;
+	windows.w = SCREEN_WIDTH;
+	windows.h = SCREEN_HEIGHT;
+	scrollx = LARGEUR_CASE*3;
+	scrolly = HAUTEUR_CASE*3;
 
 	return 0;
 }
@@ -66,6 +69,9 @@ int chargement_images()
 	tmonstre = spriteFromURI("img/Robot 1/robot1_machine.png", 0, 0, 49, 43, 25, 22);
 	tperso = spriteFromURI("img/Survivor 1/survivor1_stand.png", 0, 0, 35, 43, 18, 22);
 	tinterface = spriteFromURI("img/Interface.png", 0, 0, 200, 100, 100, 50);
+	card = spriteFromURI("img/Colored/genericItem_color_150.png", 0, 0, 99, 88, 50, 44);
+	heart = spriteFromURI("img/Colored/genericItem_color_102.png", 0, 0, 117, 117, 50, 44);
+	stairs = spriteFromURI("img/RPG/rpgTile154.png", 0, 0, 64, 64, 32, 32);
 
 	// Font
 	police = TTF_OpenFont("Gabriela.ttf", 25);
@@ -154,8 +160,9 @@ int display_image_with_rotation(int x, int y, int w, int h, int cx, int cy, doub
 int maj_ecran()
 {
 	//Update screen
-	SDL_RenderPresent( gRenderer );
-	SDL_RenderClear( gRenderer );
+	SDL_RenderPresent(gRenderer);
+	SDL_RenderClear(gRenderer);
+	SDL_RenderFillRect(gRenderer, &windows);
 	if((SDL_GetTicks() - ticks) < (1000/30))
 		SDL_Delay((1000/30) - (SDL_GetTicks() - ticks));
 	ticks = SDL_GetTicks();

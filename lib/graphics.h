@@ -56,6 +56,9 @@ Sprite therbe;
 Sprite tmonstre;
 Sprite tperso;
 Sprite tinterface;
+Sprite card;
+Sprite heart;
+Sprite stairs;
 // Le timestamp pour limiter les ips
 unsigned int ticks;
 // La police à afficher
@@ -63,7 +66,7 @@ TTF_Font *police;
 // Le zoom
 float zoom;
 // Largeur et hauteur de fenetre
-int winx, winy;
+SDL_Rect windows;
 // scroll
 int scrollx, scrolly;
 

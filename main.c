@@ -13,24 +13,12 @@ int is_wall(Game game, int x, int y) {
 	return game->map[x][y] == 0;
 }
 
-Game init_game() {
-	int i;
-	Game game = malloc(sizeof(struct game_struct));
-	srand(time(NULL));
-
+int init_level(Game game) {
 	// map
 	generateMaze(game);
 
-	// player
-	game->player.x = 1;
-	game->player.y = 1;
-	game->player.direction = 2;
-	game->player.lifes = 10;
-	game->player.keys = 0;
-	game->player.papers = 0;
-
 	// robots
-	for(i=0; i<ROBOTS_NUMBER; i++) {
+	for(size_t i=0; i<ROBOTS_NUMBER; i++) {
 		int x = 0;
 		int y = 0;
 		while (is_wall(game, x, y)) {
@@ -44,6 +32,49 @@ Game init_game() {
 		game->robots[i].rotation_direction = -1 + (2*(rand()%2));
 		game->robots[i].alive = 1;
 	}
+
+	//place card
+	puts("add cards");
+	for (size_t i = 0; i < ROBOTS_NUMBER; i++) {
+		size_t x = 0;
+		size_t y = 0;
+		while (is_wall(game, x, y)) {
+			x = (rand()%(MAP_SIZE-2)) +1;
+			y = (rand()%(MAP_SIZE-2)) +1;
+		}
+		game->cards[i].x = x;
+		game->cards[i].y = y;
+		game->cards[i].still_on_map = 1;
+	}
+
+	// stairs
+	{
+		size_t x = 0;
+		size_t y = 0;
+		while (is_wall(game, x, y)) {
+			x = (rand()%(MAP_SIZE-2)) +1;
+			y = (rand()%(MAP_SIZE-2)) +1;
+		}
+		game->exit.x = x;
+		game->exit.y = y;
+	}
+
+	return 0;
+}
+
+Game init_game() {
+	Game game = malloc(sizeof(struct game_struct));
+	srand(time(NULL));
+
+	// player
+	game->player.x = 1;
+	game->player.y = 1;
+	game->player.direction = 2;
+	game->player.lifes = 10;
+	game->player.keys = 0;
+	game->player.papers = 0;
+
+	init_level(game);
 
 	// continue
 	game->quit_game = 0;
@@ -127,10 +158,21 @@ int display(Game game) {
 	}
 
 	// élements & objets
+	// stairs
+	displaySpriteOnGrid(stairs, game->exit.x, game->exit.y);
+
 	// display player
 	displayObjectSpriteOnGridWithRotation(tperso,
 		game->player.x, game->player.y,
 		90*((game->player.direction+3)%4));
+
+	//display cards
+	for(i=0; i<CARDS_NUMBER; i++) {
+		if (game->cards[i].still_on_map) {
+			displayObjectSpriteOnGrid(card,
+				game->cards[i].x, game->cards[i].y);
+		}
+	}
 
 	//display robots
 	for(i=0; i<ROBOTS_NUMBER; i++) {
@@ -142,16 +184,14 @@ int display(Game game) {
 
 	// Interface
 	char str [2];
-	displaySprite(tinterface, 10, 10);
-	afficher_texte(25, 15, "Vie:");
+	// lifes
+	displaySprite(heart, -30, -60);
 	sprintf(str, "%d", game->player.lifes);
-	afficher_texte(125, 15, str);
-	afficher_texte(25, 45, "Pièces:");
-	sprintf(str, "%d", game->player.papers);
-	afficher_texte(125, 45, str);
-	afficher_texte(25, 75, "Clés:");
+	afficher_texte(56, 8, str);
+	// cards
+	displaySprite(card, 100, -40);
 	sprintf(str, "%d", game->player.keys);
-	afficher_texte(125, 75, str);
+	afficher_texte(155, 0, str);
 
 	maj_ecran();
 	return 0;
@@ -202,16 +242,36 @@ int game_state(Game game) {
 		}*/
 
 		if(event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-			winx = event.window.data1;
-			winy = event.window.data2;
+			windows.x = event.window.data1;
+			windows.y = event.window.data2;
 		}
 
 		if (player_moved == 1) {
 			// collisions
 			if (!is_wall(game, next_player.x, next_player.y)) {
 				game->player = next_player;
+				/*if (new_scrollx > 0) {
+					new_scrollx = 0;
+				}
+				if (new_scrolly > 0) {
+					new_scrolly = 0;
+				}*/
 				scrollx = new_scrollx;
 				scrolly = new_scrolly;
+			}
+
+			if (game->exit.x == game->player.x &&game->exit.y == game->player.y) {
+				game->quit_game = 1;
+			}
+
+			// cards keeping
+			for (size_t i = 0; i < CARDS_NUMBER; i++) {
+				if (game->cards[i].still_on_map == 1 &&
+					game->cards[i].x == game->player.x &&
+					game->cards[i].y == game->player.y) {
+					game->cards[i].still_on_map = 0;
+					game->player.keys++;
+				}
 			}
 
 			// robots mouvement
