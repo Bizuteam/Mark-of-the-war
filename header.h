@@ -7,7 +7,7 @@
 #define SETS_NUMBER (SETS_ROW*SETS_ROW)
 #define EDGES_DOUBLE_ROW (MAP_SIZE-2)
 #define EDGES_NUMBER (2*SETS_NUMBER - 2*((MAP_SIZE-1)/2))
-#define ROBOTS_NUMBER 5
+#define ROBOTS_NUMBER (MAP_SIZE/4)
 
 typedef struct player_struct {
 	int x;

@@ -159,11 +159,10 @@ int display(Game game) {
 
 int game_state(Game game) {
 	SDL_Event event;
-	int player_moved = 0;
-
-	Player next_player = game->player;
 
 	while(SDL_PollEvent(&event)) {
+		int player_moved = 0;
+		Player next_player = game->player;
 		if(event.key.type == SDL_KEYDOWN) {
 			// Gestion des évènements
 			if (event.key.keysym.sym == SDLK_UP) {
@@ -200,46 +199,46 @@ int game_state(Game game) {
 			winx = event.window.data1;
 			winy = event.window.data2;
 		}
-	}
 
-	if (player_moved == 0) {
-		return 0;
-	}
+		if (player_moved == 1) {
+			// collisions
+			if (!is_wall(game, next_player.x, next_player.y)) {
+				game->player = next_player;
+			}
 
-	// collisions
-	if (!is_wall(game, next_player.x, next_player.y)) {
-		game->player = next_player;
-	}
-
-	// robots mouvement
-	for (size_t i = 0; i < ROBOTS_NUMBER; i++) {
-		Robot robot = game->robots[i];
-		if (robot.direction == 0) {
-			if (!is_wall(game, robot.x, robot.y-1)) {
-				robot.y--;
-			} else {
-				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
-			}
-		} else if (robot.direction == 1) {
-			if (!is_wall(game, robot.x+1, robot.y)) {
-				robot.x++;
-			} else {
-				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
-			}
-		} else if (robot.direction == 2) {
-			if (!is_wall(game, robot.x, robot.y+1)) {
-				robot.y++;
-			} else {
-				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
-			}
-		} else {
-			if (!is_wall(game, robot.x-1, robot.y)) {
-				robot.x--;
-			} else {
-				robot.direction = (robot.direction + robot.rotation_direction+4)%4;
+			// robots mouvement
+			for (size_t i = 0; i < ROBOTS_NUMBER; i++) {
+				Robot robot = game->robots[i];
+				if (rand()%(MAP_SIZE/2) == 0) {
+					robot.direction = (robot.direction + robot.rotation_direction+4)%4;
+				} else  if (robot.direction == 0) {
+					if (!is_wall(game, robot.x, robot.y-1)) {
+						robot.y--;
+					} else {
+						robot.direction = (robot.direction + robot.rotation_direction+4)%4;
+					}
+				} else if (robot.direction == 1) {
+					if (!is_wall(game, robot.x+1, robot.y)) {
+						robot.x++;
+					} else {
+						robot.direction = (robot.direction + robot.rotation_direction+4)%4;
+					}
+				} else if (robot.direction == 2) {
+					if (!is_wall(game, robot.x, robot.y+1)) {
+						robot.y++;
+					} else {
+						robot.direction = (robot.direction + robot.rotation_direction+4)%4;
+					}
+				} else {
+					if (!is_wall(game, robot.x-1, robot.y)) {
+						robot.x--;
+					} else {
+						robot.direction = (robot.direction + robot.rotation_direction+4)%4;
+					}
+				}
+				game->robots[i] = robot;
 			}
 		}
-		game->robots[i] = robot;
 	}
 
 	return 0;
