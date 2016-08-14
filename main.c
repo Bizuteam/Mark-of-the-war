@@ -342,6 +342,10 @@ int game_state(Game game) {
 					}
 				}
 				game->player = player;
+
+				if (game->player.lifes == 0) {
+					game->quit_game = 1;
+				}
 			}
 		}
 	}
