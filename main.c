@@ -163,37 +163,43 @@ int game_state(Game game) {
 	while(SDL_PollEvent(&event)) {
 		int player_moved = 0;
 		Player next_player = game->player;
+		int new_scrollx = scrollx;
+		int new_scrolly = scrolly;
 		if(event.key.type == SDL_KEYDOWN) {
 			// Gestion des évènements
 			if (event.key.keysym.sym == SDLK_UP) {
 					next_player.y--;
 					next_player.direction = 0;
 					player_moved = 1;
+					new_scrolly+=64;
 			} else if (event.key.keysym.sym == SDLK_RIGHT) {
 					next_player.x++;
 					next_player.direction = 1;
 					player_moved = 1;
+					new_scrollx-=64;
 			} else if (event.key.keysym.sym == SDLK_DOWN) {
 					next_player.y++;
 					next_player.direction = 2;
 					player_moved = 1;
+					new_scrolly-=64;
 			} else if (event.key.keysym.sym == SDLK_LEFT) {
 					next_player.x--;
 					next_player.direction = 3;
 					player_moved = 1;
+					new_scrollx+=64;
 			} else if (event.key.keysym.sym == SDLK_ESCAPE) {
 				game->quit_game = 1;
 				player_moved = 1;
 			}
 		}
 
-		if(event.wheel.type == SDL_MOUSEWHEEL) {
+		/*if(event.wheel.type == SDL_MOUSEWHEEL) {
 			zoom += event.wheel.y*8;
-			if(zoom > 256)
-				zoom = 256;
-			if(zoom < 128)
-				zoom = 128;
-		}
+			if(zoom > 512)
+				zoom = 512;
+			if(zoom < 8)
+				zoom = 8;
+		}*/
 
 		if(event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 			winx = event.window.data1;
@@ -204,6 +210,8 @@ int game_state(Game game) {
 			// collisions
 			if (!is_wall(game, next_player.x, next_player.y)) {
 				game->player = next_player;
+				scrollx = new_scrollx;
+				scrolly = new_scrolly;
 			}
 
 			// robots mouvement

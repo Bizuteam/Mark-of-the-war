@@ -9,6 +9,7 @@
 #define SCREEN_HEIGHT 600
 #define LARGEUR_CASE 64
 #define HAUTEUR_CASE 64
+#define ZOOM_DEFAULT 256
 
 typedef struct sprite_struct {
 	SDL_Texture* img;
@@ -60,8 +61,10 @@ unsigned int ticks;
 // La police à afficher
 TTF_Font *police;
 // Le zoom
-int zoom;
+float zoom;
 // Largeur et hauteur de fenetre
 int winx, winy;
+// scroll
+int scrollx, scrolly;
 
 #endif

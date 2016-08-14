@@ -16,6 +16,8 @@ int Init_Graphics()
 	zoom = 256;
 	winx = SCREEN_WIDTH;
 	winy = SCREEN_HEIGHT;
+	scrollx = 64*6;
+	scrolly = 64*6;
 
 	return 0;
 }
@@ -96,8 +98,8 @@ int displaySprite(Sprite sprite, int x, int y) {
 
 int displaySpriteOnGrid(Sprite sprite, int x, int y) {
 	SDL_Rect pos = sprite->location;
-	pos.x = x*LARGEUR_CASE * zoom/256;
-	pos.y = y*HAUTEUR_CASE * zoom/256;
+	pos.x = (x*LARGEUR_CASE+scrollx) * zoom/256;
+	pos.y = (y*HAUTEUR_CASE+scrolly) * zoom/256;
 	pos.w = pos.w * zoom/256;
 	pos.h = pos.h * zoom/256;
 	return SDL_RenderCopy(gRenderer, sprite->img, &sprite->location, &pos );
@@ -105,8 +107,8 @@ int displaySpriteOnGrid(Sprite sprite, int x, int y) {
 
 int displaySpriteOnGridWithOffset(Sprite sprite, int x, int y, int offx, int offy) {
 	SDL_Rect pos = sprite->location;
-	pos.x = (x*LARGEUR_CASE+offx) * zoom/256;
-	pos.y = (y*HAUTEUR_CASE+offy) * zoom/256;
+	pos.x = (x*LARGEUR_CASE+offx+scrollx) * zoom/256;
+	pos.y = (y*HAUTEUR_CASE+offy+scrolly) * zoom/256;
 	pos.w = pos.w * zoom/256;
 	pos.h = pos.h * zoom/256;
 	return SDL_RenderCopy(gRenderer, sprite->img, &sprite->location, &pos );
@@ -114,8 +116,8 @@ int displaySpriteOnGridWithOffset(Sprite sprite, int x, int y, int offx, int off
 
 int displayObjectSpriteOnGrid(Sprite sprite, int x, int y) {
 	SDL_Rect pos = sprite->location;
-	pos.x = (x*LARGEUR_CASE+LARGEUR_CASE/2-sprite->center.x) * zoom/256;
-	pos.y = (y*HAUTEUR_CASE+HAUTEUR_CASE/2-sprite->center.y) * zoom/256;
+	pos.x = (x*LARGEUR_CASE+LARGEUR_CASE/2-sprite->center.x+scrollx) * zoom/256;
+	pos.y = (y*HAUTEUR_CASE+HAUTEUR_CASE/2-sprite->center.y+scrolly) * zoom/256;
 	pos.w = pos.w * zoom/256;
 	pos.h = pos.h * zoom/256;
 	return SDL_RenderCopy(gRenderer, sprite->img, &sprite->location, &pos );
@@ -124,8 +126,8 @@ int displayObjectSpriteOnGrid(Sprite sprite, int x, int y) {
 int displayObjectSpriteOnGridWithRotation(Sprite sprite, int x, int y, double angle) {
 	SDL_Rect pos = sprite->location;
 	SDL_Point center = sprite->center;
-	pos.x = (x*LARGEUR_CASE+LARGEUR_CASE/2-sprite->center.x) * zoom/256;
-	pos.y = (y*HAUTEUR_CASE+HAUTEUR_CASE/2-sprite->center.y) * zoom/256;
+	pos.x = (x*LARGEUR_CASE+LARGEUR_CASE/2-sprite->center.x+scrollx) * zoom/256;
+	pos.y = (y*HAUTEUR_CASE+HAUTEUR_CASE/2-sprite->center.y+scrolly) * zoom/256;
 	pos.w = pos.w * zoom/256;
 	pos.h = pos.h * zoom/256;
 	center.x = center.x * zoom/256;

@@ -2,7 +2,7 @@
 #define HEADER_H
 #define VITESSE 4
 //Must be odd
-#define MAP_SIZE 21
+#define MAP_SIZE ((2*10)+1)
 #define SETS_ROW ((MAP_SIZE-1)/2)
 #define SETS_NUMBER (SETS_ROW*SETS_ROW)
 #define EDGES_DOUBLE_ROW (MAP_SIZE-2)
@@ -31,7 +31,6 @@ typedef struct game_struct {
 	Robot robots[ROBOTS_NUMBER];
 	int map[MAP_SIZE][MAP_SIZE];
 	int quit_game;
-
 }* Game;
 
 #endif
