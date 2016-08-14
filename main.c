@@ -6,77 +6,20 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include "lib/graphics.h"
-
-#define VITESSE 4
-#define MAP_SIZE 20
-#define ROBOTS_NUMBER 5
-
-typedef struct player_struct {
-	int x;
-	int y;
-	int direction;
-	int lifes;
-	int papers;
-	int keys;
-} Player;
-
-typedef struct robot_struct {
-	int x;
-	int y;
-	int direction;
-	int rotation_direction;
-	int alive;
-} Robot;
-
-typedef struct game_struct {
-	Player player;
-	Robot robots[ROBOTS_NUMBER];
-	int map[MAP_SIZE][MAP_SIZE];
-	int quit_game;
-
-}* Game;
+#include "header.h"
+#include "maze.h"
 
 int is_wall(Game game, int x, int y) {
 	return game->map[x][y] == 0;
 }
 
 Game init_game() {
-	int i, j;
+	int i;
 	Game game = malloc(sizeof(struct game_struct));
 	srand(time(NULL));
 
 	// map
-	srand(time(NULL));
-	for(i=0; i<MAP_SIZE; i++) {
-		for(j=0; j<MAP_SIZE; j++) {
-			game->map[i][j] = 0;
-		}
-	}
-
-	for (j=1; j<=MAP_SIZE-2; j++) {
-		game->map[j][1] = 1;
-		game->map[j][MAP_SIZE-2] = 1;
-	}
-	for (j=1; j<=MAP_SIZE-2; j++) {
-		game->map[1][j] = 1;
-		game->map[MAP_SIZE-2][j] = 1;
-	}
-	for (i=0; i<10; i++) {
-		// rand coord
-		int x_origin = (rand()%(MAP_SIZE-2)) +1;
-		int x_destination = (rand()%(MAP_SIZE-2)) +1;
-		int y_origin = (rand()%(MAP_SIZE-2)) +1;
-		int y_destination = (rand()%(MAP_SIZE-2)) +1;
-
-		for (j=x_origin; j<=x_destination; j++) {
-			game->map[j][y_origin] = 1;
-			game->map[j][y_destination] = 1;
-		}
-		for (j=y_origin; j<=y_destination; j++) {
-			game->map[x_origin][j] = 1;
-			game->map[x_destination][j] = 1;
-		}
-	}
+	generateMaze(game);
 
 	// player
 	game->player.x = 1;
